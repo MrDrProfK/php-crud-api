@@ -1,0 +1,14 @@
+# Options +MultiViews
+RewriteEngine On
+# RewriteBase /api/
+
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(products(/.*)?)$ products.php/$1 [NC,L]
+
+# RewriteCond %{REQUEST_FILENAME}\.php -f
+# RewriteRule ^([^\.]+)$ $1.php [NC,L]
