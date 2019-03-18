@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+	$(function(){
+		$("button").click(function(){
+			const host = "localhost";
+			$.post(`http://${host}/api/products.php`,
+			{
+				"entries": 2,
+				"product[0]": 
+				{
+					"name": "jack",
+					"price": "3.29"
+				},
+				"product[1]": 
+				{
+					"name": "jill",
+					"price": "4.37"
+				}
+			},
+			function(data, status){
+				alert("Data:\n" + data + "\nStatus: " + status);
+			});
+	  	});
+	});
+</script>
+
+</head>
+<body>
+
+<button>Send POST request</button>
+
+</body>
+</html>
+
