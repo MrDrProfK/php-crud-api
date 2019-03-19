@@ -1,26 +1,17 @@
-<html>
-<head></head>
-<body>
-	<form method="post">
-		Product name:<br>
-		<input type="text" name="name"><br>
-		Price:<br>
-		<input type="text" name="price"><br>
-		<input type="submit">
-	</form>
-</body>
-</html>
-
 <?php
-// echo $_SERVER['DOCUMENT_ROOT'];
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+function createEntries() {
 	try {
-		$name = validateParams('name', $_POST['name']);
-		$price = validateParams('price', $_POST['price']);
+// 			echo $_SERVER["CONTENT_TYPE"] . "\n";
+		for ($i = 0; $i < $_POST['entries']; $i++) {
+			
+			$_PRODUCT = $_POST['product'][$i];
+			$name = validateParams('name', $_PRODUCT['name']);
+			$price = validateParams('price', $_PRODUCT['price']);				
+		}
 		http_response_code(200);
-		echo $name;
-		echo '<br>';
-		echo money_format('$%i',floatval($price));
+		echo json_encode($_POST);
+// 			echo json_encode($_POST, JSON_FORCE_OBJECT);
 	} catch (Exception $e) {
 		echo 'Caught exception: ', $e->getMessage(), "\n";
 	}
@@ -29,8 +20,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 function validateParams($param, $value) {
 	if (empty($value))
 		throw new Exception("Missing value for parameter '{$param}'.");
+	
+	$refinedString = htmlspecialchars(trim($value));
+	
+	if (empty($refinedString))
+		throw new Exception("Invalid value for parameter '{$param}'.");
 		
-	return htmlspecialchars(trim($value));
+	return $refinedString;
 }
-
-?>
