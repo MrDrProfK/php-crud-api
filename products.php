@@ -16,12 +16,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
 	case 'GET':
 		readEntries();
 		break;
-	case 'PUT';
+	case 'PUT':
 		updateEntries();
 		break;
-	case 'DELETE';
+	case 'DELETE':
 		deleteEntries();
 		break;
 	default:
-		echo 'Invalid request method.';
+		echo json_encode('Invalid request method.');
 }
