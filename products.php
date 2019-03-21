@@ -8,6 +8,10 @@ require_once 'read.php';
 require_once 'update.php';
 require_once 'delete.php';
 
+// For debugging
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
+
 // Perform appropriate CRUD operation based on HTTP request method
 switch ($_SERVER['REQUEST_METHOD']) {
 	case 'POST':

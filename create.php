@@ -7,8 +7,8 @@ function createEntries() {
 		$_processedInput = array();
 		for ($i = 0; $i < $_POST['entries']; $i++) {
 			$_product = $_POST['product'][$i];
-			$name = validateParams('name', $_product['name']);
-			$price = validateParams('price', $_product['price']);
+			$name = validateParam('name', $_product['name']);
+			$price = validateParam('price', $_product['price']);
 			
 			$_processedInput[$i] = array('name' => $name, 'price' => $price);
 		}		
@@ -21,18 +21,19 @@ function createEntries() {
 		echo json_encode($_responseSummary);
 				
 	} catch (Exception $e) {
+		http_response_code(400);
 		echo 'Caught exception: ', $e->getMessage(), "\n";
 	}
 }
 
-function validateParams($param, $value) {
-	if (empty($value))
+function validateParam($param, $value) {
+	if ($value === '')
 		throw new Exception("Missing value for parameter '{$param}'.");
 	
 	$refinedString = htmlspecialchars(trim($value));
 	
-	if (empty($refinedString))
-		throw new Exception("Invalid value for parameter '{$param}'.");
+// 	if (empty($refinedString))
+// 		throw new Exception("Invalid value for parameter '{$param}'.");
 		
 	return $refinedString;
 }
