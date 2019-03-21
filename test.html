@@ -38,24 +38,6 @@
 			});
 	  	});
 	  	
-// 	  	$("#GET-button").click(function() {
-// 	  		const id = "2l";
-// 	  		const name = "jack";
-// 	  		const priceLow = "4.37";
-// 	  		const priceHigh = "4.37";
-// 			$.ajax({
-// 				url: `http://${host}/api/products/${id}?name=${name}&price-low=${priceLow}&price-high=${priceHigh}`,
-// 				method: "GET",
-// // 				dataType: "JSON",
-// 				success: function(data, status) {
-// 					$("#GET-response").html(JSON.stringify(data, undefined, 2) + "<br>status: " + status);
-// 				},
-// 				error: function(data, status) {
-// 					alert(JSON.stringify(data));
-// 				}
-// 			});
-// 	  	});
-// 	  	
 	  	$("#PUT-button").click(function() {
 			$.ajax({
 				url: `http://${host}/api/products/`,

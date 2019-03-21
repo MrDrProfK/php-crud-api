@@ -1,10 +1,11 @@
 <?php
 
 require_once 'db-connect.php';
+// For debugging
 // readEntries();
 function readEntries() {
 
-	$_arr = array();
+	$_filterParams = array();
 	$_urlSplitByForwardSlash = explode('/', $_SERVER['REQUEST_URI']);
 	if (sizeOf($_urlSplitByForwardSlash) > 3) {
 		// extract id param from url
@@ -15,9 +16,15 @@ function readEntries() {
 		
 			try {
 				foreach ($_ids as $id) {
+					// Less sanitization required in compared to values passed by
+					// query string
 					validateID($id);
-				}		
-				$_arr['ids'] = $_ids;
+				}
+				// No need to re-assemble the id list, as url encoded whitespace should
+				// not pass prior validation.
+				array_push($_filterParams, array('property' => 'id', 'comparator' => 'IN',
+													'value' => '(' . $idParam . ')'));
+
 			} catch (Exception $e) {
 				http_response_code(400);
 				echo 'Caught exception: '. $e->getMessage();
@@ -29,10 +36,17 @@ function readEntries() {
 	if(isset($_GET['name'])){
 		$_names = explode(',', $_GET['name']);
 		try {
-			foreach ($_names as $name) {
-				validateName('name', $name);
+			$sanitizedNames = '';
+			for ($i = 0; $i < sizeOf($_names) - 1; $i++) {
+				$validatedName = validateName($_names[$i]);
+				$sanitizedNames .= "'{$validatedName}'" . ',';
 			}
-			$_arr['names'] = $_names;
+			$validatedName = validateName($_names[$i]);
+			$sanitizedNames .= "'{$validatedName}'";
+			
+			array_push($_filterParams, array('property' => 'name', 'comparator' => 'IN',
+												'value' => '(' . $sanitizedNames . ')'));
+
 		} catch (Exception $e) {
 			http_response_code(400);
 			echo 'Caught exception: '. $e->getMessage();
@@ -42,7 +56,8 @@ function readEntries() {
 	
 	if (isset($_GET['price-low'])) {
 		try {
-			$_arr['price-low'] = validatePriceBound('price-low', $_GET['price-low']);
+			array_push($_filterParams, array('property' => 'price', 'comparator' => '>=', 'value' => validatePriceBound('price-low', $_GET['price-low'])));
+
 		} catch (Exception $e) {
 			http_response_code(400);
 			echo 'Caught exception: '. $e->getMessage();
@@ -52,24 +67,59 @@ function readEntries() {
 	
 	if (isset($_GET['price-high'])) {
 		try {
-			$_arr['price-high'] = validatePriceBound('price-high', $_GET['price-high']);
+			array_push($_filterParams, array('property' => 'price', 'comparator' => '<=', 'value' => validatePriceBound('price-high', $_GET['price-high'])));
+
 		} catch (Exception $e) {
 			http_response_code(400);
 			echo 'Caught exception: '. $e->getMessage();
 			return;
 		}
 	}
-
+	$_responseSummary = readEntriesFromDB($_filterParams);
 	http_response_code(200);
+	echo json_encode($_responseSummary);
+}
+
+function readEntriesFromDB($_filterParams) {
+
+	$dbConnection = openDBConnection();
+// 	$_fetchedEntries = array();
+	$numEntries = 0;
+// 	"id='{$lastID}'"
+	$selectionQuery = 'SELECT * FROM products';
+	if (sizeOf($_filterParams) > 0) {
+		$selectionQuery .= " WHERE ";
+		echo var_dump($_filterParams);
+	
+		for ($i = 0; $i < sizeOf($_filterParams) - 1; $i++) {
+			$selectionQuery .= $_filterParams[$i]['property'] . ' ';
+			$selectionQuery .= $_filterParams[$i]['comparator'] . ' ';
+			$selectionQuery .= $_filterParams[$i]['value'] . ' ';
+			$selectionQuery .= 'AND ';
+		}
+		$selectionQuery .= $_filterParams[$i]['property'] . ' ';
+		$selectionQuery .= $_filterParams[$i]['comparator'] . ' ';
+		$selectionQuery .= $_filterParams[$i]['value'];
+	}
+	// Order by id (can change later to give client more flexibility)
+	$selectionQuery .= ' ORDER BY id ASC';
+	echo "\n" . $selectionQuery . "\n";
+
+	$selectionResult = $dbConnection->query($selectionQuery);
+	$_fetchedEntries = $selectionResult->fetchAll(PDO::FETCH_ASSOC);
+	// echo var_dump($_fetchedEntries);
+	
+	return array('fetched_entries' => sizeOf($_fetchedEntries), 'product' => $_fetchedEntries);
+
 }
 
 function validateID($id) {
 
 	$refinedString = htmlspecialchars(trim($id));
-	
+
 	if (filter_var($refinedString, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))))
 		return $refinedString;
-		
+
 	throw new Exception("Invalid value for 'id'. An 'id' must be specified by an int greater than 0.");
 }
 
