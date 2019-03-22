@@ -1,6 +1,7 @@
 <?php
 
 require_once 'db-connect.php';
+require_once 'utilities.php';
 // For debugging
 // readEntries();
 function readEntries() {
@@ -16,7 +17,7 @@ function readEntries() {
 		
 			try {
 				foreach ($_ids as $id) {
-					// Less sanitization required in compared to values passed by
+					// Less sanitization required when compared to values passed by
 					// query string
 					validateID($id);
 				}
@@ -56,7 +57,7 @@ function readEntries() {
 	
 	if (isset($_GET['price-low'])) {
 		try {
-			array_push($_filterParams, array('property' => 'price', 'comparator' => '>=', 'value' => validatePriceBound('price-low', $_GET['price-low'])));
+			array_push($_filterParams, array('property' => 'price', 'comparator' => '>=', 'value' => validatePrice('price-low', $_GET['price-low'])));
 
 		} catch (Exception $e) {
 			http_response_code(400);
@@ -67,7 +68,7 @@ function readEntries() {
 	
 	if (isset($_GET['price-high'])) {
 		try {
-			array_push($_filterParams, array('property' => 'price', 'comparator' => '<=', 'value' => validatePriceBound('price-high', $_GET['price-high'])));
+			array_push($_filterParams, array('property' => 'price', 'comparator' => '<=', 'value' => validatePrice('price-high', $_GET['price-high'])));
 
 		} catch (Exception $e) {
 			http_response_code(400);
@@ -83,13 +84,10 @@ function readEntries() {
 function readEntriesFromDB($_filterParams) {
 
 	$dbConnection = openDBConnection();
-// 	$_fetchedEntries = array();
 	$numEntries = 0;
-// 	"id='{$lastID}'"
 	$selectionQuery = 'SELECT * FROM products';
 	if (sizeOf($_filterParams) > 0) {
 		$selectionQuery .= " WHERE ";
-		echo var_dump($_filterParams);
 	
 		for ($i = 0; $i < sizeOf($_filterParams) - 1; $i++) {
 			$selectionQuery .= $_filterParams[$i]['property'] . ' ';
@@ -103,41 +101,10 @@ function readEntriesFromDB($_filterParams) {
 	}
 	// Order by id (can change later to give client more flexibility)
 	$selectionQuery .= ' ORDER BY id ASC';
-	echo "\n" . $selectionQuery . "\n";
 
 	$selectionResult = $dbConnection->query($selectionQuery);
 	$_fetchedEntries = $selectionResult->fetchAll(PDO::FETCH_ASSOC);
-	// echo var_dump($_fetchedEntries);
 	
 	return array('fetched_entries' => sizeOf($_fetchedEntries), 'product' => $_fetchedEntries);
 
-}
-
-function validateID($id) {
-
-	$refinedString = htmlspecialchars(trim($id));
-
-	if (filter_var($refinedString, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))))
-		return $refinedString;
-
-	throw new Exception("Invalid value for 'id'. An 'id' must be specified by an int greater than 0.");
-}
-
-function validateName($value) {
-	if (trim($value) === '')
-		throw new Exception("Missing value for parameter 'name'.");
-	
-	$refinedString = htmlspecialchars(trim($value));
-	
-	return $refinedString;
-}
-
-function validatePriceBound($name, $value) {
-
-	$refinedString = htmlspecialchars(trim($value));
-	
-	if (preg_match("/^[0-9]+(\.[0-9]{1,2})?$/", $refinedString))
-		return $refinedString;
-	
-	throw new Exception("Invalid value for '{$name}'.");
 }

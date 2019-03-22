@@ -1,20 +1,18 @@
 <?php
 
 require_once 'db-connect.php';
+require_once 'utilities.php';
 
 function createEntries() {
 	try {
 		$_processedInput = array();
 		for ($i = 0; $i < $_POST['entries']; $i++) {
 			$_product = $_POST['product'][$i];
-			$name = validateParam('name', $_product['name']);
-			$price = validateParam('price', $_product['price']);
+			$name = validateName($_product['name']);
+			$price = validatePrice('price', $_product['price']);
 			
 			$_processedInput[$i] = array('name' => $name, 'price' => $price);
 		}		
-		for ($i = 0; $i < $_POST['entries']; $i++) {
-			$_processedInput[$i];
-		}
 		
 		$_responseSummary = insertEntriesIntoDB($_processedInput);
 		http_response_code(200);
@@ -24,18 +22,6 @@ function createEntries() {
 		http_response_code(400);
 		echo 'Caught exception: ', $e->getMessage(), "\n";
 	}
-}
-
-function validateParam($param, $value) {
-	if ($value === '')
-		throw new Exception("Missing value for parameter '{$param}'.");
-	
-	$refinedString = htmlspecialchars(trim($value));
-	
-// 	if (empty($refinedString))
-// 		throw new Exception("Invalid value for parameter '{$param}'.");
-		
-	return $refinedString;
 }
 
 function insertEntriesIntoDB($_processedInput) {
