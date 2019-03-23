@@ -46,6 +46,6 @@ function updateEntriesInDB($_processedInput) {
 			$_updatedEntries[$numEntries++] = $selectionResult->fetch(PDO::FETCH_ASSOC);
 		}
 	}
-	return array('affected_entries' => $numEntries, 'product' => $_updatedEntries);
+	return array('updated_entries' => $numEntries, 'product' => $_updatedEntries);
 
 }
