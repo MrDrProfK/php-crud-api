@@ -12,16 +12,15 @@
 				"entries": 2,
 				"product": [
 					{
-						"name": "jack",
+						"Name": "jack",
 						"price": "3.29"
 					},
 					{
 						"name": "jill",
-						"price": "4.37"
+						"price": "4.32"
 					}
 				]
-			},
-			function(data, status) {
+			}).always(function(data, status) {
 				$("#POST-response").html(JSON.stringify(data, undefined, 2) + "<br>status: " + status);
 			});
 	  	});
@@ -29,9 +28,9 @@
 	  	$("#GET-button").click(function() {
 	  		const id = "2";
 	  		const name = "jack";
-	  		const priceLow = "4.37";
-	  		const priceHigh = "4.375";
-			$.get(`http://${host}/api/products/${id}?name=${name}&price-low=${priceLow}&price-high=${priceHigh}`,
+	  		const priceLow = "3.29";
+	  		const priceHigh = "4.37";
+			$.get(`http://${host}/api/products/?name=${name}&price-low=${priceLow}&price-high=${priceHigh}`,
 			{dataType: "json"})
 			.always(function (data, status) {
 				$("#GET-response").html(JSON.stringify(data, undefined, 2) + "<br>status: " + status);
@@ -42,14 +41,15 @@
 			$.ajax({
 				url: `http://${host}/api/products/`,
 				method: "PUT",
+// 				dataType: "json",
 				data:
 				{
 					"entries": 2,
 					"product": [
 					{
-						"id": "0",
+						"id": "366",
 						"name": "jack",
-						"price": "2.22"
+						"price": "2.24"
 					},
 					{
 						"id": "1",
@@ -73,7 +73,7 @@
 	  		const priceLow = "2.49";
 	  		const priceHigh = "5.31";
 			$.ajax({
-				url: `http://${host}/api/products/${id}?name=${name}&priceLow=${priceLow}&priceHigh=${priceHigh}`,
+				url: `http://${host}/api/products/${id}?name=${name}&price-low=${priceLow}&price-high=${priceHigh}`,
 				method: "DELETE",
 				success: function(data, status) {
 					$("#DELETE-response").html(JSON.stringify(data, undefined, 2) + "<br>status: " + status);
