@@ -1,5 +1,9 @@
 <?php
 
+// Created by Aaron Knoll
+// Licensed under the GNU GPLv3
+// (a copy of which is contained along with this application)
+
 function openDBConnection() {
 
 	try {
