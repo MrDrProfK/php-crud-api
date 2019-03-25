@@ -3,6 +3,8 @@
 require_once 'db-connect.php';
 require_once 'utilities.php';
 
+class RowCountDiscrepancyException extends Exception {};
+
 function deleteEntries() {
 
 	$_filterParams = array();
@@ -84,6 +86,10 @@ function deleteEntries() {
 		$_responseSummary = deleteEntriesFromDB($_filterParams);
 		http_response_code(200);
 		echo json_encode($_responseSummary);
+	} catch (RowCountDiscrepancyException $e) {
+		http_response_code(500);
+		echo 'Caught exception: '. $e->getMessage();
+// 		return;
 	} catch (Exception $e) {
 		http_response_code(400);
 		echo 'Caught exception: '. $e->getMessage();
@@ -124,7 +130,7 @@ function deleteEntriesFromDB($_filterParams) {
 	$deletionResult = $dbConnection->exec($deletionQuery);
 	
 	if (sizeOf($_entriesToBeDeleted) != $deletionResult)
-		throw new Exception('Unexpected discrepancy in qualifying row count and actual affected row count!');
+		throw new RowCountDiscrepancyException('Unexpected discrepancy in qualifying row count and actual affected row count!');
 	
 	return array('deleted_entries' => $deletionResult, 'product' => $_entriesToBeDeleted);
 
