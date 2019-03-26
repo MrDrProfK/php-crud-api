@@ -36,3 +36,34 @@ function validatePrice($name, $value) {
 	
 	return $refinedString;
 }
+
+function addIDParamToFilterParams(& $_filterParams) {
+
+	$parentDirName = basename(__DIR__);
+	if (preg_match("/\/{$parentDirName}\/products\//i", $_SERVER['REQUEST_URI'])) {
+		$_urlSplitByForwardSlash = explode('/', $_SERVER['REQUEST_URI']);
+		// Extract id param from URL
+		$idParam = explode('?', $_urlSplitByForwardSlash[sizeOf($_urlSplitByForwardSlash) - 1])[0];
+		$idParam = trim($idParam);
+		if ($idParam != '') {
+			$_ids = explode(',', $idParam);
+
+			try {
+				foreach ($_ids as $id) {
+					// Less sanitization required when compared to values passed by
+					// query string
+					validateID($id);
+				}
+				// No need to re-assemble the id list, as url encoded whitespace should
+				// not pass prior validation.
+				array_push($_filterParams, array('property' => 'id', 'comparator' => 'IN',
+													'value' => '(' . $idParam . ')'));
+
+			} catch (Exception $e) {
+				http_response_code(400);
+				echo 'Caught exception: '. $e->getMessage();
+				die;
+			}
+		}
+	}
+}

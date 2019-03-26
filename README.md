@@ -19,39 +19,51 @@
 3. Appropriate exception handling and sensible error messages.
 
 ##Additional Capabilities
+
 1. Retrieve a list of products, filtered optionally by id, price-low, and price-high.
 2. Delete records, filtered by id, name, price-low, or price-high (or any combination of these properties).
-
-##Dependencies
-- Apache
-- MySQL
-- PHP 7
-
-##Deployment
-Create a database table in MySQL called products with the following SQL schema:
-
-	CREATE TABLE `products` (
-	 `id` int(11) NOT NULL AUTO_INCREMENT,
-	 `name` varchar(100) NOT NULL,
-	 `price` decimal(15,2) NOT NULL,
-	 PRIMARY KEY (`id`),
-	 UNIQUE KEY `unique_index` (`name`,`price`)
-	) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 ##Encoding
 
 - Request Body: application/x-www-form-urlencoded<br>
 - Response Body: application/json
 
+##Dependencies
+
+- Apache
+- MySQL
+- PHP 7
+
+#Deployment
+
+1. Place the API directory (the one containing this project) in the directory that serves as the web root of your domain (or any subdirectory with the appropriate permissions for serving webpages).
+
+2. Create a database table in MySQL called products with the following SQL schema:
+
+		CREATE TABLE `products` (
+		 `id` int(11) NOT NULL AUTO_INCREMENT,
+		 `name` varchar(100) NOT NULL,
+		 `price` decimal(15,2) NOT NULL,
+		 PRIMARY KEY (`id`),
+		 UNIQUE KEY `unique_index` (`name`,`price`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+3. Create a database config file with extension `.ini` in the following format:
+
+		[database]
+		user = USER
+		pw = PW
+		dbname = DBNAME
+
+4. In `db-connect.php`, replace the path reference to `crud_api_db_config.ini`, with a path reference to your database config file.
+
 #Usage
 
-###Create Records
-
-Request
+##Create Records
 
 `POST /api/products/`
 
-####Request Body:
+###Request Body:
 
 	{
 		"entries": 2,
@@ -70,7 +82,7 @@ Request
 - *entries*: number of products to be inserted into the database<br>
 - *product*: array of objects specifying the name and price parameters for products to be inserted into the database
 
-####Response:
+###Response:
 
 	{
 		"inserted_entries": 1,
@@ -86,7 +98,7 @@ Request
 - *inserted_entries*: number of products inserted into the database<br>
 - *product*: array of objects specifying the id, name, and price parameters for products inserted into the database
 
-###Retrieve Records
+##Retrieve Records
 
 `GET /api/products/{id}?name=NAME&price-low=PRICE-LOW&price-high=PRICE-HIGH`
 
@@ -97,7 +109,7 @@ Request
 
 **Note**: All parameters (path and query) are optional. If no parameters are specified, all products will be returned.
 
-####Response:
+###Response:
 
 	{
 		"fetched_entries": 1,
@@ -113,11 +125,11 @@ Request
 - *fetched_entries*: number of products fetched from the database<br>
 - *product*: array of objects specifying the id, name, and price parameters for products fetched from the database
 
-###Update Records
+##Update Records
 
 `PUT /api/products/`
 
-####Request Body:
+###Request Body:
 
 	{
 		"entries": 2,
@@ -138,7 +150,7 @@ Request
 - *entries*: number of products to be updated in the database<br>
 - *product*: array of objects specifying the id, name, and price parameters for products to be updated in the database
 
-####Response:
+###Response:
 
 	{
 		"updated_entries": 2,
@@ -159,7 +171,7 @@ Request
 - *updated_entries*: number of products updated in the database<br>
 - *product*: array of objects specifying the id, name, and price parameters for products updated in the database
 
-###Delete Records
+##Delete Records
 
 `DELETE /api/products/{id}?name=NAME&price-low=PRICE-LOW&price-high=PRICE-HIGH`
 
@@ -170,7 +182,7 @@ Request
 
 **NOTE**: At least one parameter (path or query) must be specified. Additionally, other parameters may be optionally specified.
 
-####Response:
+###Response:
 
 	{
 		"deleted_entries": 1,

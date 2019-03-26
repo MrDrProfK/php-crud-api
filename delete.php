@@ -12,32 +12,8 @@ class RowCountDiscrepancyException extends Exception {};
 function deleteEntries() {
 
 	$_filterParams = array();
-	$_urlSplitByForwardSlash = explode('/', $_SERVER['REQUEST_URI']);
-	if (sizeOf($_urlSplitByForwardSlash) > 3) {
-		// Extract id parameter from URL
-		$idParam = explode('?', $_urlSplitByForwardSlash[3])[0];
-		$idParam = trim($idParam);
-		if ($idParam != '') {
-			$_ids = explode(',', $idParam);
-		
-			try {
-				foreach ($_ids as $id) {
-					// Less sanitization required when compared to values passed by
-					// query string
-					validateID($id);
-				}
-				// No need to re-assemble the id list, as url encoded whitespace should
-				// not pass prior validation.
-				array_push($_filterParams, array('property' => 'id', 'comparator' => 'IN',
-													'value' => '(' . $idParam . ')'));
-
-			} catch (Exception $e) {
-				http_response_code(400);
-				echo 'Caught exception: '. $e->getMessage();
-				return;
-			}
-		}
-	}
+	// If the id param is specified, add it to the filter
+	addIDParamToFilterParams($_filterParams);
 	
 	// Parse query string parameters and store them in $_delete
 	$urlParts = parse_url(getenv('REQUEST_URI'));
