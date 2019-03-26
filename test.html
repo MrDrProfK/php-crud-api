@@ -12,7 +12,7 @@
 	$(function(){
 		const host = "localhost";
 		$("#POST-button").click(function() {
-			$.post(`http://${host}/api/products/`,
+			$.post(`http://${host}/php-crud-api/products/`,
 			{
 				"entries": 2,
 				"product": [
@@ -35,7 +35,7 @@
 	  		const name = "jack";
 	  		const priceLow = "3.29";
 	  		const priceHigh = "4.37";
-			$.get(`http://${host}/api/products/?name=${name}&price-low=${priceLow}&price-high=${priceHigh}`,
+			$.get(`http://${host}/php-crud-api/products/?name=${name}&price-low=${priceLow}&price-high=${priceHigh}`,
 			{dataType: "json"})
 			.always(function (data, status) {
 				$("#GET-response").html(JSON.stringify(data, undefined, 2) + "<br>status: " + status);
@@ -44,7 +44,7 @@
 	  	
 	  	$("#PUT-button").click(function() {
 			$.ajax({
-				url: `http://${host}/api/products/`,
+				url: `http://${host}/php-crud-api/products/`,
 				method: "PUT",
 // 				dataType: "json",
 				data:
@@ -57,7 +57,7 @@
 						"price": "2.24"
 					},
 					{
-						"id": "1",
+						"id": "417",
 						"name": "josephine",
 						"price": "3.33"
 					}
@@ -78,7 +78,7 @@
 	  		const priceLow = "2.49";
 	  		const priceHigh = "5.31";
 			$.ajax({
-				url: `http://${host}/api/products/${id}?name=${name}&price-low=${priceLow}&price-high=${priceHigh}`,
+				url: `http://${host}/php-crud-api/products/${id}?name=${name}&price-low=${priceLow}&price-high=${priceHigh}`,
 				method: "DELETE",
 				success: function(data, status) {
 					$("#DELETE-response").html(JSON.stringify(data, undefined, 2) + "<br>status: " + status);

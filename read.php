@@ -6,8 +6,7 @@
 
 require_once 'db-connect.php';
 require_once 'utilities.php';
-// For debugging
-// readEntries();
+
 function readEntries() {
 
 	$_filterParams = array();

@@ -61,7 +61,7 @@
 
 ##Create Records
 
-`POST /api/products/`
+`POST /php-crud-api/products/`
 
 ###Request Body:
 
@@ -100,7 +100,7 @@
 
 ##Retrieve Records
 
-`GET /api/products/{id}?name=NAME&price-low=PRICE-LOW&price-high=PRICE-HIGH`
+`GET /php-crud-api/products/{id}?name=NAME&price-low=PRICE-LOW&price-high=PRICE-HIGH`
 
 - *id*: positive integer (or list of integers)<br>
 - *name*: alphanumeric string (or list of strings)<br>
@@ -127,7 +127,7 @@
 
 ##Update Records
 
-`PUT /api/products/`
+`PUT /php-crud-api/products/`
 
 ###Request Body:
 
@@ -173,7 +173,7 @@
 
 ##Delete Records
 
-`DELETE /api/products/{id}?name=NAME&price-low=PRICE-LOW&price-high=PRICE-HIGH`
+`DELETE /php-crud-api/products/{id}?name=NAME&price-low=PRICE-LOW&price-high=PRICE-HIGH`
 
 - *id*: positive integer (or list of integers)<br>
 - *name*: alphanumeric string (or list of strings)<br>

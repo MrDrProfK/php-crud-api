@@ -1,6 +1,6 @@
 # Options +MultiViews
 RewriteEngine On
-# RewriteBase /api/
+# RewriteBase /php-crud-api/
 
 RewriteCond %{REQUEST_FILENAME}\.html -f
 RewriteCond %{REQUEST_FILENAME} !-d
