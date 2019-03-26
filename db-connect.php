@@ -15,8 +15,9 @@ function openDBConnection() {
 		return $dbh;
 		
 	} catch (PDOException $e) {
+		http_response_code(500);
 		echo "Error!: " . $e->getMessage() . "<br>";
-		exit();
+		die;
 	}
 	
 }

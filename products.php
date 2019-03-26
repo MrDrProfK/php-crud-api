@@ -31,5 +31,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
 		deleteEntries();
 		break;
 	default:
-		echo json_encode('Invalid request method.');
+		http_response_code(400);
+		echo 'Invalid request method.';
 }

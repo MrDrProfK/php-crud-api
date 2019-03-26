@@ -27,12 +27,12 @@ function validateName($value) {
 	return $refinedString;
 }
 
-function validatePrice($name, $value) {
+function validatePrice($priceVarName, $value) {
 
 	$refinedString = htmlspecialchars(trim($value));
 	
 	if (!preg_match("/^[0-9]{1,13}\.[0-9]{2}$/", $refinedString))
-		throw new Exception("Invalid value for '{$name}'. '{$name}' must be a positive decimal value, specified to 2 decimal places. If the value specified is less than one, the decimal must be proceeded by a leading zero. The total number of digits may not exceed 15.");
+		throw new Exception("Invalid value for '{$priceVarName}'. '{$priceVarName}' must be a positive decimal value, specified to 2 decimal places. If the value specified is less than one, the decimal must be proceeded by a leading zero. The total number of digits may not exceed 15.");
 	
 	return $refinedString;
 }
